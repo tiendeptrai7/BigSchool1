@@ -1,0 +1,15 @@
+﻿@*@model BigSchool1.Models.Course*@
+@{
+    ViewBag.Title = "Home Page";
+}
+<div class="row">
+    <ul>
+        @foreach (var course in Model)
+        {
+        <li>
+            @course.DateTime.ToSring("dd/MM/yyyy HH:mm")  - @course.LecturerId
+        </li> 
+        }
+
+    </ul>
+</div>
