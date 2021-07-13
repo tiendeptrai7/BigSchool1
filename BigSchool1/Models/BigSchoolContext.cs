@@ -5,13 +5,14 @@ using System.Linq;
 
 namespace BigSchool1.Models
 {
-    public partial class BigChoolContext : DbContext
+    public partial class BigSchoolContext : DbContext
     {
-        public BigChoolContext()
-            : base("name=BigChoolContext")
+        public BigSchoolContext()
+            : base("name=BigSchoolContext")
         {
         }
 
+        public virtual DbSet<Attendance> Attendances { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Course> Courses { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
@@ -21,6 +22,11 @@ namespace BigSchool1.Models
             modelBuilder.Entity<Category>()
                 .HasMany(e => e.Courses)
                 .WithRequired(e => e.Category)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Course>()
+                .HasMany(e => e.Attendances)
+                .WithRequired(e => e.Course)
                 .WillCascadeOnDelete(false);
         }
     }

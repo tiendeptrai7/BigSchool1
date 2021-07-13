@@ -16,7 +16,7 @@ namespace BigSchool1.Controllers
         public ActionResult Create()
         {
             // GET LIST CATEGORY
-            BigChoolContext context = new BigChoolContext();
+            BigSchoolContext context = new BigSchoolContext();
             Course objCourse = new Course();
             objCourse.ListCategory = context.Categories.ToList();
             return View(objCourse);
@@ -26,7 +26,7 @@ namespace BigSchool1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Course objCourse)
         {
-            BigChoolContext context = new BigChoolContext();
+            BigSchoolContext context = new BigSchoolContext();
 
             //khong xet valid lecttureid vi bang user dang nhap
             ModelState.Remove("LecturerId");
@@ -43,6 +43,38 @@ namespace BigSchool1.Controllers
             context.SaveChanges();
             //tro ve home
             return RedirectToAction("Index", "Home");
+        }
+        public ActionResult Attending()
+        {
+            BigSchoolContext context = new BigSchoolContext();
+            ApplicationUser currentUser = System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>()
+                .FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
+            var listAttendances = context.Attendances.Where(p => p.Attendee == currentUser.Id).ToList();
+            var courses = new List<Course>();
+            foreach (Attendance temp in listAttendances)
+            {
+                Course objCourse = temp.Course;
+                objCourse.LecturerId = System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>()
+                    .FindById(objCourse.LecturerId).Name;
+                courses.Add(objCourse);
+            }
+            return View(courses);
+        }
+
+        public ActionResult Mine()
+        {
+
+            ApplicationUser currentUser = System.Web.HttpContext.Current.GetOwinContext()
+                .GetUserManager<ApplicationUserManager>()
+                .FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
+
+            BigSchoolContext context = new BigSchoolContext();
+            var courses = context.Courses.Where(x => x.LecturerId == currentUser.Id && x.DateTime > DateTime.Now).ToList();
+            foreach (Course i in courses)
+            {
+                i.LecturerId = currentUser.Name;
+            }
+            return View(courses);
         }
     }
 }

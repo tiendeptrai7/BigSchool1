@@ -2,14 +2,52 @@
 @{
     ViewBag.Title = "Home Page";
 }
-<div class="row">
-    <ul>
+<div class="row" style="margin-top: 10px">
+    <ul class="course">
         @foreach (var course in Model)
         {
-        <li>
-            @course.DateTime.ToSring("dd/MM/yyyy HH:mm")  - @course.LecturerId
-        </li> 
+            <li>
+                <div class="date">
+                    <div class="month">
+                        @course.DateTime.ToString("MM")
+                    </div>
+                    <div class="day">
+                        @course.DateTime.ToString("dd")
+                    </div>
+                </div>
+                <div class="detail">
+                    <span class="lecture">
+                        @course.LecturerId
+                    </span>
+                    <span class="category">
+                        @course.Category.Name
+                    </span>
+                    <button data-course-id="@course.Id" class="btn btn-default btn-sm js-tongle-attendence">Going?</button>
+                </div>
+            </li>
         }
-
     </ul>
+
+    @section scripts{
+        <script>
+            $(document).ready(function () {
+                $(".js-tongle-attendence").click(function (e) {
+                    var button = $(e.target);
+                    $.post("/api/attendances", { Id: button.attr("data-course-id") })
+                        .done(function () {
+                            alert("Register course successflly!")
+                            button.removeClass("btn-default")
+                                .addClass("btn-info")
+                                .text("Going");
+                        }).fail(function () {
+                            alert("Something fail!");
+                        });
+                });
+            });
+        </script>
+    }
+
+
+
+
 </div>

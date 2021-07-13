@@ -106,3 +106,9 @@ C:\Users\Dell\source\repos\BigSchool1\BigSchool1\obj\Debug\BigSchool1.csproj.Cor
 C:\Users\Dell\source\repos\BigSchool1\BigSchool1\obj\Debug\BigSchool1.csproj.CopyComplete
 C:\Users\Dell\source\repos\BigSchool1\BigSchool1\obj\Debug\BigSchool1.dll
 C:\Users\Dell\source\repos\BigSchool1\BigSchool1\obj\Debug\BigSchool1.pdb
+C:\Users\Dell\source\repos\BigSchool1\BigSchool1\bin\System.Net.Http.Formatting.dll
+C:\Users\Dell\source\repos\BigSchool1\BigSchool1\bin\System.Web.Http.dll
+C:\Users\Dell\source\repos\BigSchool1\BigSchool1\bin\System.Web.Http.WebHost.dll
+C:\Users\Dell\source\repos\BigSchool1\BigSchool1\bin\System.Net.Http.Formatting.xml
+C:\Users\Dell\source\repos\BigSchool1\BigSchool1\bin\System.Web.Http.xml
+C:\Users\Dell\source\repos\BigSchool1\BigSchool1\bin\System.Web.Http.WebHost.xml
