@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -75,6 +76,81 @@ namespace BigSchool1.Controllers
                 i.LecturerId = currentUser.Name;
             }
             return View(courses);
+        }
+        [HttpGet]
+        public ActionResult Edit(int id) // id course
+        {
+            BigSchoolContext context = new BigSchoolContext();
+            Course course = context.Courses.SingleOrDefault(x => x.Id == id);
+            course.ListCategory = context.Categories.ToList();
+            if (course == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+            return View(course);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int Id, string Place, DateTime DateTime, int CategoryId)
+        {
+            BigSchoolContext context = new BigSchoolContext();
+            Course course = context.Courses.SingleOrDefault(x => x.Id == Id);
+            course.Place = Place;
+            course.DateTime = DateTime;
+            course.CategoryId = CategoryId;
+
+            context.Courses.AddOrUpdate(course);
+            context.SaveChanges();
+            return RedirectToAction("Mine");
+        }
+
+
+
+        //My upcoming course - DELETE
+        [HttpGet]
+        public ActionResult Delete(int id) // id course
+        {
+            BigSchoolContext context = new BigSchoolContext();
+            Course course = context.Courses.SingleOrDefault(x => x.Id == id);
+
+            var category = context.Categories.SingleOrDefault(c => c.Id == course.CategoryId);
+            ViewBag.CategoryName = category.Name;
+            if (course == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+            return View(course);
+        }
+
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteCourse(int id)
+        {
+            Session.Remove("Delete");
+            BigSchoolContext context = new BigSchoolContext();
+            Course course = context.Courses.SingleOrDefault(x => x.Id == id);
+            if (course == null)
+            {
+                Response.StatusCode = 404;
+                return null;
+            }
+            //kiem tra da co trong bang attendance chua
+            List<Attendance> listAttendence = context.Attendances.Where(a => a.CourseId == course.Id).ToList();
+            if (listAttendence.Count > 0)
+            {
+                Session["Delete"] = "Không thể xóa - (>.<)"; // thong bao
+                return RedirectToAction("Delete", new { id = id });
+            }
+            else
+            {
+                context.Courses.Remove(course);
+                context.SaveChanges();
+                return RedirectToAction("Mine");
+            }
         }
     }
 }
