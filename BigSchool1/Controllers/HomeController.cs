@@ -15,17 +15,39 @@ namespace BigSchool1.Controllers
         {
             BigSchoolContext context = new BigSchoolContext();
             var upcommingCourse = context.Courses.Where(x => x.DateTime > DateTime.Now).OrderBy(x => x.DateTime).ToList();
+            //lấy user login hiện tại
+            var userID = User.Identity.GetUserId();
             foreach (Course item in upcommingCourse)
             {
                 ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext()
                     .GetUserManager<ApplicationUserManager>()
                     .FindById(item.LecturerId);
 
-                item.LecturerId = user.Name;
+                item.Name = user.Name;
+
+                //lấy ds tham gia khóa học
+                if (userID != null)
+
+                {
+                    item.isLogin = true;
+                    //ktra user đó chưa tham gia khóa học
+
+                    Attendance find = context.Attendances.FirstOrDefault(p =>
+
+                    p.CourseId == item.Id && p.Attendee == userID);
+                    if (find == null)
+                        item.isShowGoing = true;
+                    //ktra user đã theo dõi giảng viên của khóa học ?
+
+                    Following findFollow = context.Followings.FirstOrDefault(p =>
+
+                    p.FollowerId == userID && p.FolloweeId == item.LecturerId);
+
+                    if (findFollow == null)
+                        item.isShowFollow = true;
+                }
+
             }
-
-
-
             return View(upcommingCourse);
         }
 
